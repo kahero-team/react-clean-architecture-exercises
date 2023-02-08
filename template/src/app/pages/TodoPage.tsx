@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import 'antd/dist/reset.css';
 import { Button, Input, Typography, Row, Col, notification } from 'antd';
 import TodoTable, { TodoType } from '../components/todo/TodoTable';
+import { addTodo } from '../redux/todo/actions';
 
 let todoId = 0;
 
 function TodoPage() {
   const [title, setTitle] = useState("");
   const [todos, setTodos] = useState<TodoType[]>([]);
+  const dispatch = useDispatch();
 
   const handleOnChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -37,6 +40,10 @@ function TodoPage() {
     setTodos(filteredTodos);
   }
 
+  const handleAction = () => {
+    dispatch(addTodo() as any); // NOTE: not a good practice
+  }
+
   return (
     <div>
       <Row style={{ padding: 15 }}>
@@ -60,6 +67,11 @@ function TodoPage() {
       </Row>
       <Row style={{ padding: 15 }}>
         <TodoTable data={todos} onDelete={handleDelete} />
+      </Row>
+      <Row style={{ padding: 15 }}>
+        <Button type="primary" onClick={handleAction}>
+          Plant Dispatch
+        </Button>
       </Row>
     </div>
   );
