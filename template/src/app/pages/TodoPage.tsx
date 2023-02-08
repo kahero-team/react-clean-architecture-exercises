@@ -4,6 +4,7 @@ import 'antd/dist/reset.css';
 import { Button, Input, Typography, Row, Col, notification } from 'antd';
 import TodoTable, { TodoType } from '../components/todo/TodoTable';
 import { addTodo } from '../redux/todo/actions';
+import { addTask } from '../redux/task/slice';
 
 let todoId = 0;
 
@@ -42,6 +43,7 @@ function TodoPage() {
 
   const handleAction = () => {
     dispatch(addTodo() as any); // NOTE: not a good practice
+    dispatch(addTask() as any);
   }
 
   return (
