@@ -1,12 +1,13 @@
 import { applyMiddleware, combineReducers, legacy_createStore as createStore } from "redux";
 import thunk from "redux-thunk";
-import todo from "../app/redux/todo/task/task.reducers";
-import task from "../app/redux/task/task.slice";
+import task from "./redux/task/task.slice";
 
 export const store = createStore(
+    
     combineReducers({
-        todo,
-        task,
+        task
     }),
     applyMiddleware(thunk),
 );
+
+console.log(store.getState());

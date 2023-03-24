@@ -15,13 +15,17 @@ interface TodoTableProps {
 function getColumns(onDelete?: (record: TodoType) => void): ColumnsType<TodoType> {
     return [
         {
+            title: 'Id',
+            dataIndex: 'id',
+            key: 'id',
+        },
+        {
             title: 'Title',
             dataIndex: 'title',
             key: 'title',
         },
         {
             title: 'Action',
-            key: 'action',
             render: (_, record) => {
                 return (
                     <Space size="middle">

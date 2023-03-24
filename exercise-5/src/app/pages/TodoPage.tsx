@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import 'antd/dist/reset.css';
 import { Button, Input, Typography, Row, Col, notification } from 'antd';
 import TodoTable, { TodoType } from '../components/todo/TodoTable';
-import { addTodo } from '../redux/todo/task/task.actions';
-import { addTask } from '../redux/task/task.slice';
+//import { addTodo } from '../redux/todo/actions';
+import { addTodo, deleteTodo, setTitle, TaskState } from '../redux/task/task.slice'
 
-let todoId = 0;
+let todoId = 2;
 
 function TodoPage() {
-  const [title, setTitle] = useState("");
-  const [todos, setTodos] = useState<TodoType[]>([]);
-  const dispatch = useDispatch();
+  const title = useSelector((state: { task: TaskState }) => state.task.title);
+  const todos = useSelector((state: {task: TaskState}) => state.task.todos);
+
+  const dispatch = useDispatch(
+
+  );
 
   const handleOnChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+       dispatch(setTitle(e.target.value));
   };
 
   const handleSubmit = () => {
@@ -27,23 +29,22 @@ function TodoPage() {
     }
 
     todoId = todoId + 1;
-    const newTodo = {
-      id: todoId,
-      title,
-    };
+   const newTodo = {
+     id: todoId,
+    title,
+   };
 
-    setTodos([...todos, newTodo]);
-    setTitle("");
+   dispatch(addTodo(newTodo));
+   setTitle("");
   };
 
   const handleDelete = (record: TodoType) => {
-    const filteredTodos = todos.filter((todo) => todo.id !== record.id);
-    setTodos(filteredTodos);
+    dispatch(deleteTodo(record.id));
   }
 
   const handleAction = () => {
-    dispatch(addTodo() as any); // NOTE: not a good practice
-    dispatch(addTask() as any);
+ //   dispatch(addTodo() as any); // NOTE: not a good practice
+ //   dispatch(addTask() as any);
   }
 
   return (
@@ -67,7 +68,6 @@ function TodoPage() {
           </Button>
         </Input.Group>
       </Row>
-
       <Row style={{ padding: 15 }}>
         <TodoTable data={todos} onDelete={handleDelete} />
       </Row>
