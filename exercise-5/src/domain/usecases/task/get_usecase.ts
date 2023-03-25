@@ -1,12 +1,12 @@
 import { TaskEntity } from "../../entities/task";
 import { TaskRepository } from "../../repositories/task";
 
-export class GetTaskUsecase {
+export class GetTasksUsecase {
     private taskRepo: TaskRepository;
     constructor(taskRepo: TaskRepository) {
         this.taskRepo = taskRepo;
     }
-    async getTask(): Promise<TaskEntity[]> {
-        return this.taskRepo.getTask();
+    async execute(): Promise<TaskEntity[]> {
+        return this.taskRepo.getTasks();
     }
 }

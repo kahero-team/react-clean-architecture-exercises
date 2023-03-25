@@ -2,81 +2,29 @@ import { TaskEntity } from "../domain/entities/task";
 import { TaskRepository } from "../domain/repositories/task";
 
 export class InMemoryTask implements TaskRepository {
-    private tasks: TaskEntity[] = [];
+  private task: TaskEntity[] = [
+    new TaskEntity(1, "Complete task 1"),
+    new TaskEntity(2, "Complete task 2"),
+  
+  ];
 
-    constructor() {
-      this.tasks = [];
-    }
+  async getTasks(): Promise<TaskEntity[]> {
+    return this.task;
+  }
 
-    async getTask(): Promise<TaskEntity[]> {
-        return this.tasks;
-    }
-    async removeTask(entity: TaskEntity): Promise<TaskEntity>{
-        const index = this.tasks.findIndex(task => task.id === entity.id);
-        if (index !== -1) {
-          const task = this.tasks.splice(index, 1)[0];
-          return task;
-        }
-        throw new Error("Task not found.");
-    }
-    async updateTask(entity: TaskEntity): Promise<TaskEntity>{
-        const index = this.tasks.findIndex(task => task.id === entity.id);
-        if (index !== -1) {
-          this.tasks[index] = entity;
-          return entity;
-        }
-        throw new Error("Task not found.");
-
-    }
-    async getAllTasks(): Promise<TaskEntity[]>{
-        return this.tasks;
-    }
-
-    async addTask(entity: TaskEntity): Promise<TaskEntity> {
-        this.tasks.push(entity);
-        return entity
-    }
+  async addTask(id: number,title: string): Promise<TaskEntity> {
+    const entity = new TaskEntity(id, title);
+    return entity;
 }
 
-export class LocalStorageTask implements TaskRepository {
-    private storageKey: string = "tasks";
+async removeTask(entity: any): Promise<any> {
+  console.log(entity)
+  const deleteData = this.task.filter((todo) => todo.id !== entity.id);
+  console.log(deleteData)
+  return deleteData;
+}
+async updateTask(entity: TaskEntity): Promise<TaskEntity> {
+  return entity;
+}
 
-    async getTask(): Promise<TaskEntity[]> {
-      const tasks = localStorage.getItem(this.storageKey);
-      return tasks ? JSON.parse(tasks) : [];
-    }
-  
-    async removeTask(entity: TaskEntity): Promise<TaskEntity> {
-      const tasks = await this.getTask();
-      const index = tasks.findIndex(task => task.id === entity.id);
-      if (index !== -1) {
-        const task = tasks.splice(index, 1)[0];
-        localStorage.setItem(this.storageKey, JSON.stringify(tasks));
-        return task;
-      }
-      throw new Error("Task not found.");
-    }
-  
-    async updateTask(entity: TaskEntity): Promise<TaskEntity> {
-      const tasks = await this.getTask();
-      const index = tasks.findIndex(task => task.id === entity.id);
-      if (index !== -1) {
-        tasks[index] = entity;
-        localStorage.setItem(this.storageKey, JSON.stringify(tasks));
-        return entity;
-      }
-      throw new Error("Task not found.");
-    }
-  
-    async getAllTasks(): Promise<TaskEntity[]> {
-      const tasks = await this.getTask();
-      return tasks;
-    }
-  
-    async addTask(entity: TaskEntity): Promise<TaskEntity> {
-      const tasks = await this.getTask();
-      tasks.push(entity);
-      localStorage.setItem(this.storageKey, JSON.stringify(tasks));
-      return entity;
-    }
 }

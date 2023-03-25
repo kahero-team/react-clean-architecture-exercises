@@ -2,12 +2,15 @@ import { applyMiddleware, combineReducers, legacy_createStore as createStore } f
 import thunk from "redux-thunk";
 import task from "./redux/task/task.slice";
 
+
+
 export const store = createStore(
     
     combineReducers({
-        task
-    }),
+        task: task,
+      }),
     applyMiddleware(thunk),
 );
+
 
 console.log(store.getState());

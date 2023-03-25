@@ -1,68 +1,93 @@
-import { createSlice, /*createAsyncThunk*/ PayloadAction} from '@reduxjs/toolkit'
-//import { PlantDataRepository } from '../../../data/plant';
-//import { PlantEntity } from '../../../domain/entities/plant';
-//import { AddPlantUsecase } from '../../../domain/usecases/add_plant_usecase';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { TaskEntity } from '../../../domain/entities/task';
+import { GetTasksUsecase } from '../../../domain/usecases/task/get_usecase';
+import { InMemoryTask } from '../../../data/task';
+//import { RemoveTasksUsecase } from '../../../domain/usecases/task/remove_usecase';
 
 
-
-interface TodoType {
-    id: number;
-    title: string;
+export const getTasks = createAsyncThunk<TaskEntity[]>(
+  'tasks/fetchTasks',
+  async () => {
+    console.log('fetchTasks thunk called');
+    const usecase = new GetTasksUsecase(new InMemoryTask());
+    const tasks = await usecase.execute();
+    return tasks;
   }
-export interface TaskState {
-    loading: boolean
-    title: string
-    todos: TodoType[];
+);
+
+//export const deleteTodo = createAsyncThunk(
+//  "categoryGroup/deleteData",
+//  async (  data: any, { rejectWithValue, dispatch }) => {
+//      try {
+//        console.log('deleteTodo thunk called');
+//        const usecase = new RemoveTasksUsecase(new InMemoryTask());
+//        await usecase.execute(data);
+//          dispatch(fetchTasks());
+//        return data.id;
+//      } catch (err) {
+//          return rejectWithValue((err as Error).message)
+//      }
+//  },
+//)
+
+
+interface TodosState {
+  items: TaskEntity[];
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
 }
 
-const initialState: TaskState = {
-    loading: false,
-    title: '',
-    todos: [
-        { id: 1, title: 'Task 1' },
-        { id: 2, title: 'Task 2' },
-      ],
+const initialState: TodosState = {
+  items: [],
+  status: 'idle',
+  error: null,
 };
 
-//export const addTask = createAsyncThunk("task/addTask", async (data, { rejectWithValue }) => {
-//    const usecase = new AddPlantUsecase(new PlantDataRepository());
-//    try {
-//        const plant = await usecase.addPlant(new PlantEntity(-1, "Test"));
-//        return plant;
-//    } catch (err: any) {
-//        return rejectWithValue(err.message);
-//    }
-//});
+export const todosSlice = createSlice({
+  name: 'todos',
+  initialState,
+  reducers: {
+    removeTask: (state, action) => {
+      console.log('remove', state.items )
+      console.log('payload', action.payload )
+      state.items = action.payload;
+    },
 
-export const taskSlice = createSlice({
-    name: 'task',
-    initialState,
-    reducers: {
-        setTitle: (state, action: PayloadAction<string>) => {
-            state.title = action.payload;
-          },
-        setTodos: (state, action: PayloadAction<TodoType[]>) => {
-            state.todos = action.payload;
-          },
-        addTodo: (state, action: PayloadAction<TodoType>) => {
-            state.todos.push(action.payload);
-          },
-        deleteTodo: (state, action: PayloadAction<number>) => {
-            state.todos = state.todos.filter((todo) => todo.id !== action.payload);
-          },
+    addTask: (state, action) => {
+      state.items.push(action.payload);
     },
-    extraReducers: (builder) => {
-//        builder.addCase(addTask.pending, (state, action) => {
-//            state.loading = true;
-//        });
-//        builder.addCase(addTask.fulfilled, (state, action) => {
-//            state.loading = false;
-//        });
-//        builder.addCase(addTask.rejected, (state, action) => {
-//          state.loading = false;
-//        });
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+    //FETCH
+      .addCase(getTasks.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getTasks.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.items = action.payload;
+      })
+      .addCase(getTasks.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message ?? null;
+      })
+      // DELETE DATA CASES
+//      .addCase(deleteTodo.fulfilled, (state, action) => {
+//        console.log("deleteTodo.fulfilled was triggered");
+//        state.status = "succeeded";
+//        state.items = state.items.filter((item) => item.id !== action.payload);
+//      })
+//      .addCase(deleteTodo.pending, (state) => {
+//        state.status = 'loading';
+//      })
+//      .addCase(deleteTodo.rejected, (state, action) => {
+//        state.status = 'failed';
+//        state.error = action.payload as string;
+//      })
+  },
 });
 
-export const { setTitle, setTodos, addTodo, deleteTodo } = taskSlice.actions;
-export default taskSlice.reducer;
+export const {  removeTask, addTask } =
+todosSlice.actions;
+
+export default todosSlice.reducer;

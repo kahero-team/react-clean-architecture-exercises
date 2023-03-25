@@ -1,22 +1,28 @@
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import 'antd/dist/reset.css';
 import { Button, Input, Typography, Row, Col, notification } from 'antd';
 import TodoTable, { TodoType } from '../components/todo/TodoTable';
-//import { addTodo } from '../redux/todo/actions';
-import { addTodo, deleteTodo, setTitle, TaskState } from '../redux/task/task.slice'
+import { addTodo } from '../redux/todo/actions';
+import { getTasks, removeTask, addTask } from '../redux/task/task.slice';
 
 let todoId = 2;
-
 function TodoPage() {
-  const title = useSelector((state: { task: TaskState }) => state.task.title);
-  const todos = useSelector((state: {task: TaskState}) => state.task.todos);
+  const tasks = useSelector((state: any) => state.task.items);
+//  const status = useSelector((state: any) => state.todos.status);
+//  const error = useSelector((state: any) => state.todos.error);
+//  const dispatch = useDispatch();
+  const [title, setTitle] = useState("");
+//  const [todos, setTodos] = useState<TodoType[]>([]);
+  const dispatch = useDispatch<any>();
 
-  const dispatch = useDispatch(
-
-  );
+  useEffect(() => {
+    dispatch(getTasks() as any);
+  }, [dispatch]);
 
   const handleOnChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-       dispatch(setTitle(e.target.value));
+    setTitle(e.target.value);
   };
 
   const handleSubmit = () => {
@@ -27,23 +33,24 @@ function TodoPage() {
       });
       return;
     }
-
     todoId = todoId + 1;
-   const newTodo = {
-     id: todoId,
-    title,
-   };
-
-   dispatch(addTodo(newTodo));
-   setTitle("");
+    const newTodo = {
+      id: todoId,
+      title,
+    };
+   dispatch(addTask(newTodo) as any);
+   setTitle('');
   };
 
+ 
   const handleDelete = (record: TodoType) => {
-    dispatch(deleteTodo(record.id));
-  }
+      const filteredTodos = tasks.filter((todo: any) => todo.id !== record.id);
+      dispatch(removeTask(filteredTodos))
+    
+  };
 
   const handleAction = () => {
- //   dispatch(addTodo() as any); // NOTE: not a good practice
+    dispatch(addTodo() as any); // NOTE: not a good practice
  //   dispatch(addTask() as any);
   }
 
@@ -69,7 +76,7 @@ function TodoPage() {
         </Input.Group>
       </Row>
       <Row style={{ padding: 15 }}>
-        <TodoTable data={todos} onDelete={handleDelete} />
+        <TodoTable data={tasks} onDelete={handleDelete} />
       </Row>
       <Row style={{ padding: 15 }}>
         <Button type="primary" onClick={handleAction}>
