@@ -17,10 +17,12 @@ function TodoPage() {
 //  const [todos, setTodos] = useState<TodoType[]>([]);
   const dispatch = useDispatch<any>();
 
+
   useEffect(() => {
+    // Update tasks when task slice changes
     dispatch(getTasks() as any);
   }, [dispatch]);
-
+  
   const handleOnChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
   };

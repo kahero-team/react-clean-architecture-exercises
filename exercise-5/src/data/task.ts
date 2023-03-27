@@ -13,7 +13,7 @@ export class TaskDataRepository implements TaskRepository {
   }
 
   async addTask(entity: TaskEntity): Promise<any> {
-    const id = Math.max(...this.tasks.map(task => task.id)) + 1;
+    const id = Math.floor(Math.random() * 1000000);
     const newTask = new TaskEntity(id, entity.title);
     this.tasks.push(newTask);
     return this.tasks;
