@@ -29,7 +29,7 @@ export const addTask = createAsyncThunk(
   },
 )
 export const removeTask = createAsyncThunk(
-  "remove/removeTask",
+  "tasks/removeTask",
   async (  data: any, { rejectWithValue, dispatch }) => {
       try {
         console.log('deleteTodo thunk called');
@@ -84,7 +84,7 @@ export const todosSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message ?? null;
       })
-      //GET TASKS
+      //ADD TASKS
       .addCase(addTask.pending, (state) => {
         state.status = 'loading';
       })
