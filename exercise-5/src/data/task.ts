@@ -33,14 +33,18 @@ async updateTask(entity: TaskEntity): Promise<TaskEntity> {
 
 export class TaskLocalStorageRepository implements TaskRepository {
   private localStorageKey = "tasks";
+  private localStorageIdKey = "tasksId";
   private tasks: TaskEntity[];
+  private tasksId = 1;
 
   constructor() {
     const tasks = localStorage.getItem(this.localStorageKey);
-    this.tasks = tasks ? JSON.parse(tasks) : [
-      new TaskEntity(1, "Complete task 1"),
-      new TaskEntity(2, "Complete task 2")
-    ];
+    this.tasks = tasks ? JSON.parse(tasks) : [];
+
+    const tasksId = localStorage.getItem(this.localStorageIdKey);
+    if (tasksId != null) {
+      this.tasksId = parseInt(tasksId);
+    }
   }
 
   async getTasks(): Promise<TaskEntity[]> {
@@ -48,8 +52,7 @@ export class TaskLocalStorageRepository implements TaskRepository {
   }
 
   async addTask(entity: TaskEntity): Promise<any> {
-    const newId = this.tasks.length > 0 ? this.tasks[this.tasks.length - 1].id + 1 : 1;
-    const newTask = new TaskEntity(newId, entity.title);
+    const newTask = new TaskEntity(this.tasksId++, entity.title);
     this.tasks.push(newTask);
     this.saveTasksToLocalStorage();
     return this.tasks;
@@ -77,5 +80,6 @@ export class TaskLocalStorageRepository implements TaskRepository {
 
   private saveTasksToLocalStorage() {
     localStorage.setItem(this.localStorageKey, JSON.stringify(this.tasks));
+    localStorage.setItem(this.localStorageIdKey, this.tasksId.toString());
   }
 }
