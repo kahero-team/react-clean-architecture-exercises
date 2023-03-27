@@ -18,7 +18,7 @@ export const addTask = createAsyncThunk(
   "tasks/addTask",
   async (  data: any, { rejectWithValue, dispatch }) => {
       try {
-        console.log('deleteTodo thunk called');
+        console.log('addTask thunk called');
         const usecase = new AddTaskUsecase(new TaskDataRepository());
         const result = await usecase.execute(data);
     
@@ -32,7 +32,7 @@ export const removeTask = createAsyncThunk(
   "tasks/removeTask",
   async (  data: any, { rejectWithValue, dispatch }) => {
       try {
-        console.log('deleteTodo thunk called');
+        console.log('removeTask thunk called');
         const usecase = new RemoveTaskUsecase(new TaskDataRepository());
         const result = await usecase.execute(data);
     
