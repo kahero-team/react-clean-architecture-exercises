@@ -1,13 +1,13 @@
 import { TaskEntity } from '../../../../domain/entities/task';
 import { AddTaskUsecase } from '../../../../domain/usecases/task/add_usecase';
-import { TaskDataRepository } from '../../../../data/task';
+import { TaskLocalStorageRepository } from '../../../../data/task';
 import {
     ADD_TODO_REQUEST,
     ADD_TODO_SUCCESS,
     ADD_TODO_FAILURE,
 } from './types'
 
-const _repository = new TaskDataRepository()
+const _repository = new TaskLocalStorageRepository()
 
 export function addTodo(entity: TaskEntity) {
     return async function (dispatch: any) {

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { TaskEntity } from '../../../domain/entities/task';
 import { GetTasksUsecase } from '../../../domain/usecases/task/get_usecase';
-import { TaskDataRepository } from '../../../data/task';
+import { TaskLocalStorageRepository } from '../../../data/task';
 import { RemoveTaskUsecase } from '../../../domain/usecases/task/remove_usecase';
 import { AddTaskUsecase } from '../../../domain/usecases/task/add_usecase';
 
@@ -9,7 +9,7 @@ export const getTasks = createAsyncThunk<TaskEntity[]>(
   'tasks/getTasks',
   async () => {
     console.log('getTasks thunk called');
-    const usecase = new GetTasksUsecase(new TaskDataRepository());
+    const usecase = new GetTasksUsecase(new TaskLocalStorageRepository());
     const tasks = await usecase.execute();
     return tasks;
   }
@@ -19,7 +19,7 @@ export const addTask = createAsyncThunk(
   async (  data: any, { rejectWithValue, dispatch }) => {
       try {
         console.log('addTask thunk called');
-        const usecase = new AddTaskUsecase(new TaskDataRepository());
+        const usecase = new AddTaskUsecase(new TaskLocalStorageRepository());
         const result = await usecase.execute(data);
         return result;
       } catch (err) {
@@ -32,7 +32,7 @@ export const removeTask = createAsyncThunk(
   async (  data: any, { rejectWithValue, dispatch }) => {
       try {
         console.log('deleteTodo thunk called');
-        const usecase = new RemoveTaskUsecase(new TaskDataRepository());
+        const usecase = new RemoveTaskUsecase(new TaskLocalStorageRepository());
         const result = await usecase.execute(data);
     
         return result;
