@@ -32,7 +32,7 @@ export const removeTask = createAsyncThunk(
   "tasks/removeTask",
   async (  data: any, { rejectWithValue, dispatch }) => {
       try {
-        console.log('removeTask thunk called');
+        console.log('deleteTodo thunk called');
         const usecase = new RemoveTaskUsecase(new TaskDataRepository());
         const result = await usecase.execute(data);
     
