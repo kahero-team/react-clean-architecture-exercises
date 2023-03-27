@@ -44,8 +44,6 @@ function TodoPage() {
 
  
   const handleDelete = (record: TodoType) => {
-//      const filteredTodos = tasks.filter((todo: any) => todo.id !== record.id);
-//      console.log("handleDelete",filteredTodos);
       dispatch(removeTask(record))
     
   };

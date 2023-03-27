@@ -21,7 +21,6 @@ export const addTask = createAsyncThunk(
         console.log('addTask thunk called');
         const usecase = new AddTaskUsecase(new TaskDataRepository());
         const result = await usecase.execute(data);
-    
         return result;
       } catch (err) {
           return rejectWithValue((err as Error).message)
@@ -90,7 +89,7 @@ export const todosSlice = createSlice({
       })
       .addCase(addTask.fulfilled, (state, action: any) => {
         state.status = 'succeeded';
-        state.items.push(action.payload);
+        state.items = action.payload;
       })
       .addCase(addTask.rejected, (state, action) => {
         state.status = 'failed';

@@ -1,6 +1,6 @@
 export class TaskEntity{
     public id: number;
-    private title: string;
+    public title: string;
     private completed: boolean;
   
     constructor(id: number, title: string, completed: boolean = false) {

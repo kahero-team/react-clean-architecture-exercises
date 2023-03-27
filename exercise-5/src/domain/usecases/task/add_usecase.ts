@@ -6,7 +6,7 @@ export class AddTaskUsecase {
     constructor(taskRepo: TaskRepository) {
         this.taskRepo = taskRepo;
     }
-    async execute(entity: TaskEntity): Promise<TaskEntity> {
+    async execute(entity: TaskEntity): Promise<TaskEntity[]> {
         return this.taskRepo.addTask(entity);
     }
 }
