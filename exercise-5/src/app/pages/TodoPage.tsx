@@ -7,7 +7,7 @@ import TodoTable, { TodoType } from '../components/todo/TodoTable';
 import { addTodo } from '../redux/todo/actions';
 import { getTasks, removeTask, addTask } from '../redux/task/task.slice';
 
-let todoId = 3;
+
 function TodoPage() {
   const tasks = useSelector((state: any) => state.task.items);
 //  const status = useSelector((state: any) => state.todos.status);
@@ -33,9 +33,8 @@ function TodoPage() {
       });
       return;
     }
-    todoId = todoId + 1;
+  
     const newTodo = {
-      id: todoId,
       title,
     };
    dispatch(addTask(newTodo) as any);

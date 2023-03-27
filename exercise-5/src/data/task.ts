@@ -13,7 +13,8 @@ export class TaskDataRepository implements TaskRepository {
   }
 
   async addTask(entity: TaskEntity): Promise<any> {
-    const newTask = new TaskEntity(entity.id, entity.title);
+    const id = Math.max(...this.tasks.map(task => task.id)) + 1;
+    const newTask = new TaskEntity(id, entity.title);
     this.tasks.push(newTask);
     return this.tasks;
   }

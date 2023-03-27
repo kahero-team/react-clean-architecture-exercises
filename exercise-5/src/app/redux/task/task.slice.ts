@@ -89,7 +89,7 @@ export const todosSlice = createSlice({
       })
       .addCase(addTask.fulfilled, (state, action: any) => {
         state.status = 'succeeded';
-        state.items = action.payload;
+          state.items = action.payload;
       })
       .addCase(addTask.rejected, (state, action) => {
         state.status = 'failed';
