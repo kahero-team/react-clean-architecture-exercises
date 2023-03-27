@@ -57,7 +57,7 @@ const initialState: TodosState = {
 };
 
 export const todosSlice = createSlice({
-  name: 'todos',
+  name: 'task',
   initialState,
   reducers: {
 //    removeTask: (state, action) => {
