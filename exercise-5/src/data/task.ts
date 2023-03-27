@@ -32,7 +32,7 @@ async updateTask(entity: TaskEntity): Promise<TaskEntity> {
 }
 
 export class TaskLocalStorageRepository implements TaskRepository {
-  private readonly localStorageKey = "tasks";
+  private localStorageKey = "tasks";
   private tasks: TaskEntity[];
 
   constructor() {
