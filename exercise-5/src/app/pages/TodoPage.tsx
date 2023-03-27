@@ -7,7 +7,7 @@ import TodoTable, { TodoType } from '../components/todo/TodoTable';
 import { addTodo } from '../redux/todo/actions';
 import { getTasks, removeTask, addTask } from '../redux/task/task.slice';
 
-let todoId = 2;
+let todoId = 3;
 function TodoPage() {
   const tasks = useSelector((state: any) => state.task.items);
 //  const status = useSelector((state: any) => state.todos.status);
@@ -45,6 +45,7 @@ function TodoPage() {
  
   const handleDelete = (record: TodoType) => {
       const filteredTodos = tasks.filter((todo: any) => todo.id !== record.id);
+      console.log("handleDelete",filteredTodos);
       dispatch(removeTask(filteredTodos))
     
   };

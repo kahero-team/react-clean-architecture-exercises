@@ -1,34 +1,47 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { TaskEntity } from '../../../domain/entities/task';
 import { GetTasksUsecase } from '../../../domain/usecases/task/get_usecase';
-import { InMemoryTask } from '../../../data/task';
-//import { RemoveTasksUsecase } from '../../../domain/usecases/task/remove_usecase';
-
+import { TaskDataRepository } from '../../../data/task';
+import { RemoveTaskUsecase } from '../../../domain/usecases/task/remove_usecase';
+import { AddTaskUsecase } from '../../../domain/usecases/task/add_usecase';
 
 export const getTasks = createAsyncThunk<TaskEntity[]>(
-  'tasks/fetchTasks',
+  'tasks/getTasks',
   async () => {
-    console.log('fetchTasks thunk called');
-    const usecase = new GetTasksUsecase(new InMemoryTask());
+    console.log('getTasks thunk called');
+    const usecase = new GetTasksUsecase(new TaskDataRepository());
     const tasks = await usecase.execute();
     return tasks;
   }
 );
-
-//export const deleteTodo = createAsyncThunk(
-//  "categoryGroup/deleteData",
-//  async (  data: any, { rejectWithValue, dispatch }) => {
-//      try {
-//        console.log('deleteTodo thunk called');
-//        const usecase = new RemoveTasksUsecase(new InMemoryTask());
-//        await usecase.execute(data);
-//          dispatch(fetchTasks());
-//        return data.id;
-//      } catch (err) {
-//          return rejectWithValue((err as Error).message)
-//      }
-//  },
-//)
+export const addTask = createAsyncThunk(
+  "tasks/addTask",
+  async (  data: any, { rejectWithValue, dispatch }) => {
+      try {
+        console.log('deleteTodo thunk called');
+        const usecase = new AddTaskUsecase(new TaskDataRepository());
+        const result = await usecase.execute(data);
+    
+        return result;
+      } catch (err) {
+          return rejectWithValue((err as Error).message)
+      }
+  },
+)
+export const removeTask = createAsyncThunk(
+  "remove/removeTask",
+  async (  data: any, { rejectWithValue, dispatch }) => {
+      try {
+        console.log('deleteTodo thunk called');
+        const usecase = new RemoveTaskUsecase(new TaskDataRepository());
+        const result = await usecase.execute(data);
+    
+        return result;
+      } catch (err) {
+          return rejectWithValue((err as Error).message)
+      }
+  },
+)
 
 
 interface TodosState {
@@ -47,19 +60,19 @@ export const todosSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    removeTask: (state, action) => {
-      console.log('remove', state.items )
-      console.log('payload', action.payload )
-      state.items = action.payload;
-    },
+//    removeTask: (state, action) => {
+//      console.log('remove', state.items )
+//      console.log('payload', action.payload )
+//      state.items = action.payload;
+//    },
 
-    addTask: (state, action) => {
-      state.items.push(action.payload);
-    },
+//    addTask: (state, action) => {
+//      state.items.push(action.payload);
+//    },
   },
   extraReducers: (builder) => {
     builder
-    //FETCH
+      //GET TASKS
       .addCase(getTasks.pending, (state) => {
         state.status = 'loading';
       })
@@ -71,23 +84,35 @@ export const todosSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message ?? null;
       })
+      //GET TASKS
+      .addCase(addTask.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(addTask.fulfilled, (state, action: any) => {
+        state.status = 'succeeded';
+        state.items.push(action.payload);
+      })
+      .addCase(addTask.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message ?? null;
+      })
       // DELETE DATA CASES
-//      .addCase(deleteTodo.fulfilled, (state, action) => {
-//        console.log("deleteTodo.fulfilled was triggered");
-//        state.status = "succeeded";
-//        state.items = state.items.filter((item) => item.id !== action.payload);
-//      })
-//      .addCase(deleteTodo.pending, (state) => {
-//        state.status = 'loading';
-//      })
-//      .addCase(deleteTodo.rejected, (state, action) => {
-//        state.status = 'failed';
-//        state.error = action.payload as string;
-//      })
+      .addCase(removeTask.fulfilled, (state, action: any) => {
+        console.log("deleteTodo.fulfilled was triggered");
+        state.status = "succeeded";
+        state.items = action.payload;
+      })
+      .addCase(removeTask.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(removeTask.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload as string;
+      })
   },
 });
 
-export const {  removeTask, addTask } =
-todosSlice.actions;
+//export const {  /*removeTask*/ /*addTask*/ } =
+//todosSlice.actions;
 
 export default todosSlice.reducer;
